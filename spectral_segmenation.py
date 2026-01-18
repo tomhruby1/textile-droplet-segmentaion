@@ -87,20 +87,26 @@ def lo_pass_filter(img, radius=17):
 
     return img_back
 
-def segment(img_path:Path, out_path: Path, out_file:Path, pixel_size_um=8.02, 
-            threshold=100, maxval=120, lo_pass_radius=18):
-    img = cv2.imread(str(img_p))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
+def segment(img:np.ndarray, binary_threshold, lo_pass_radius):
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img_back = lo_pass_filter(img, radius=lo_pass_radius)
     
     threshod, seg = cv2.threshold(img_back, 100,120, cv2.THRESH_BINARY_INV)
-    seg_binary = seg > threshold
+    seg_binary = seg > binary_threshold
 
     # pixel counts
     area = np.sum(seg_binary)
     lx = np.sum(seg_binary, axis=0, dtype=bool).sum()
     ly = np.sum(seg_binary, axis=1, dtype=bool).sum()
+
+    return seg_binary, area, lx, ly
+
+
+def segment_path(img_path:Path, out_path: Path, out_file:Path, pixel_size_um=8.02, 
+                 threshold=100, maxval=120,  lo_pass_radius=18):
+    img = cv2.imread(str(img_p))
+    
+    seg_binary, area, lx, ly = segment(img, threshold, lo_pass_radius)
     
     # in micro meters
     area_m = area * pixel_size_um
