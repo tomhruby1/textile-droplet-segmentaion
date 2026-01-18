@@ -18,7 +18,7 @@ from PySide6.QtGui import (
 )
 from dataclasses import dataclass
 
-from spectral_segmenation import segment
+from spectral_segmenation import segment, save_binary_image
 
 
 @dataclass
@@ -799,9 +799,17 @@ class MaskEditor(QMainWindow):
             # Save as binary mask (0 or 255)
             cv2.imwrite(str(mask_file), mask * 255)
 
+            save_binary_image(
+                mask,
+                out_path / f"{name}_segmentation.png",
+                description=name,
+                units_per_pixel=self.pixel_size_spin.value()
+            )
+
         out_file = out_path / "result.csv"
         with open(out_file, 'w') as f:
             writer = csv.writer(f)
+            writer.writerow(["File Name", "Area", "lx", "ly"])
             for idx, seg_res in enumerate(self.seg_results):
                 if seg_res is None:
                     writer.writerow([self.filenames[idx], "", "", ""])

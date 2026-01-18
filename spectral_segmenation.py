@@ -15,7 +15,7 @@ def save_binary_image(
     binary_array,
     output_path,
     description="",
-    mm_per_pixel=8.02,
+    units_per_pixel=8.02,
     dpi=150
 ):
     """
@@ -33,8 +33,8 @@ def save_binary_image(
     h, w = binary_array.shape
 
     # Physical dimensions
-    width_mm  = w * mm_per_pixel
-    height_mm = h * mm_per_pixel
+    width_mm  = w * units_per_pixel
+    height_mm = h * units_per_pixel
 
     fig, ax = plt.subplots()
 
