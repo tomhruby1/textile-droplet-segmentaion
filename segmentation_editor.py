@@ -20,6 +20,9 @@ from dataclasses import dataclass
 
 from spectral_segmenation import segment, save_binary_image
 
+MIN_BRUSH_SIZE = 1
+MAX_BRUSH_SIZE = 150
+PIXEL_SIZE_TO_MILIMETERS = 10e-6
 
 @dataclass
 class SegmentationResult():
@@ -440,7 +443,7 @@ class MaskEditor(QMainWindow):
         
         brush_label = QLabel("Brush Size:")
         self.brush_slider = QSlider(Qt.Horizontal)
-        self.brush_slider.setRange(1, 100)
+        self.brush_slider.setRange(MIN_BRUSH_SIZE, MAX_BRUSH_SIZE)
         self.brush_slider.setValue(15)
         self.brush_slider.valueChanged.connect(self._on_brush_size_changed)
         
@@ -517,7 +520,7 @@ class MaskEditor(QMainWindow):
     
     def _run_segmentation(self):
         """Run automatic segmentation with current parameters. (Dummy implementation)"""
-        pixel_size = self.pixel_size_spin.value()
+        pixel_size = self.pixel_size_spin.value() * PIXEL_SIZE_TO_MILIMETERS # input pixel size to MM scale (e.g. from micrometers)
         binary_threshold = self.binary_threshold_spin.value()
         lo_pass_radius = self.lo_pass_radius_spin.value()
         
@@ -803,7 +806,7 @@ class MaskEditor(QMainWindow):
                 mask,
                 out_path / f"{name}_segmentation.png",
                 description=name,
-                units_per_pixel=self.pixel_size_spin.value()
+                units_per_pixel=self.pixel_size_spin.value() * PIXEL_SIZE_TO_MILIMETERS
             )
 
         out_file = out_path / "result.csv"

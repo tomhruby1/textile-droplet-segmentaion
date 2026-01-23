@@ -16,7 +16,8 @@ def save_binary_image(
     output_path,
     description="",
     units_per_pixel=8.02,
-    dpi=150
+    dpi=150,
+    unit_label="mm"
 ):
     """
     Save a binary image with axes scaled to physical units (mm),
@@ -48,8 +49,8 @@ def save_binary_image(
     )
 
     # Label axes
-    ax.set_xlabel("μm")
-    ax.set_ylabel("μm")
+    ax.set_xlabel(unit_label)
+    ax.set_ylabel(unit_label)
     ax.set_aspect("equal")
 
     # Place description as title
