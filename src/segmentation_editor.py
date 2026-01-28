@@ -22,7 +22,7 @@ from spectral_segmenation import segment, save_binary_image
 
 MIN_BRUSH_SIZE = 1
 MAX_BRUSH_SIZE = 150
-PIXEL_SIZE_TO_MILIMETERS = 10e-6
+PIXEL_SIZE_TO_MILIMETERS = 1e-3 # pixel size passed in micrometers
 
 @dataclass
 class SegmentationResult():
@@ -543,8 +543,7 @@ class MaskEditor(QMainWindow):
             self.statusBar().showMessage("No image loaded for segmentation")
             return
         
-        self.statusBar().showMessage(f"Running segmentation with pixel_size={pixel_size}, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius}...")
-        
+        self.statusBar().showMessage(f"Running segmentation with pixel_size={pixel_size}mm, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius}...")
         # # Placeholder: create a simple threshold-based mask as demo
         # # Replace this with actual segmentation algorithm
         # image = self.images[self.current_index]
@@ -570,7 +569,7 @@ class MaskEditor(QMainWindow):
         )
 
         self.canvas.set_mask(mask)
-        self.statusBar().showMessage(f"Segmentation complete (pixel_size={pixel_size}, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius})")
+        self.statusBar().showMessage(f"Segmentation complete (pixel_size={pixel_size}mm, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius})")
 
 
 
