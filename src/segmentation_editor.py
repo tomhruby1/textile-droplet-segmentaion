@@ -565,11 +565,11 @@ class MaskEditor(QMainWindow):
             area,
             lx,
             ly,
-            pixel_size
+            pixel_size * PIXEL_SIZE_TO_MILIMETERS
         )
 
         self.canvas.set_mask(mask)
-        self.statusBar().showMessage(f"Segmentation complete (pixel_size={pixel_size}mm, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius})")
+        self.statusBar().showMessage(f"Segmentation complete (pixel_size={pixel_size}µm, binary_threshold={binary_threshold}, lo_pass_radius={lo_pass_radius})")
 
 
 
@@ -766,13 +766,13 @@ class MaskEditor(QMainWindow):
 
             # Recompute stats from the (potentially hand-edited) mask
             area, lx, ly = compute_mask_stats(mask)
-            pixel_size = self.pixel_size_spin.value()
+            pixel_size_mm = self.pixel_size_spin.value() * PIXEL_SIZE_TO_MILIMETERS
             self.seg_results[self.current_index] = SegmentationResult(
                 image_path=self.filenames[self.current_index],
                 area=area,
                 lx=lx,
                 ly=ly,
-                pixel_size=pixel_size,
+                pixel_size=pixel_size_mm,
             )
     
     def _pick_color(self):
