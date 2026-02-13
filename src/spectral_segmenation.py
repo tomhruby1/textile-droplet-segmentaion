@@ -88,6 +88,21 @@ def lo_pass_filter(img, radius=17):
 
     return img_back
 
+def compute_mask_stats(mask: np.ndarray) -> tuple[int, int, int]:
+    """Compute area, lx, ly statistics from a binary mask.
+    
+    Args:
+        mask: 2D binary array (0/1 or bool)
+    
+    Returns:
+        (area, lx, ly) in pixel counts
+    """
+    area = int(np.sum(mask > 0))
+    lx = int(np.sum(np.any(mask > 0, axis=0)))
+    ly = int(np.sum(np.any(mask > 0, axis=1)))
+    return area, lx, ly
+
+
 def segment(img:np.ndarray, binary_threshold, lo_pass_radius):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img_back = lo_pass_filter(img, radius=lo_pass_radius)
@@ -95,10 +110,7 @@ def segment(img:np.ndarray, binary_threshold, lo_pass_radius):
     threshod, seg = cv2.threshold(img_back, 100,120, cv2.THRESH_BINARY_INV)
     seg_binary = seg > binary_threshold
 
-    # pixel counts
-    area = np.sum(seg_binary)
-    lx = np.sum(seg_binary, axis=0, dtype=bool).sum()
-    ly = np.sum(seg_binary, axis=1, dtype=bool).sum()
+    area, lx, ly = compute_mask_stats(seg_binary)
 
     return seg_binary, area, lx, ly
 

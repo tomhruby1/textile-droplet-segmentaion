@@ -18,7 +18,7 @@ from PySide6.QtGui import (
 )
 from dataclasses import dataclass
 
-from spectral_segmenation import segment, save_binary_image
+from spectral_segmenation import segment, save_binary_image, compute_mask_stats
 
 MIN_BRUSH_SIZE = 1
 MAX_BRUSH_SIZE = 150
@@ -367,7 +367,7 @@ class MaskEditor(QMainWindow):
         # Data storage
         self.images: list[np.ndarray] = []
         self.masks: list[np.ndarray] = []
-        self.seg_results: list[np.ndarray] = []
+        self.seg_results: list[SegmentationResult | None] = []
         self.filenames: list[str] = []
         self.current_index = 0
         
@@ -759,9 +759,21 @@ class MaskEditor(QMainWindow):
             self._update_navigation()
     
     def _store_current_mask(self):
-        """Store the current mask back to the list."""
+        """Store the current mask back to the list and recompute segmentation stats."""
         if self.images and self.canvas.get_mask() is not None:
-            self.masks[self.current_index] = self.canvas.get_mask().copy()
+            mask = self.canvas.get_mask().copy()
+            self.masks[self.current_index] = mask
+
+            # Recompute stats from the (potentially hand-edited) mask
+            area, lx, ly = compute_mask_stats(mask)
+            pixel_size = self.pixel_size_spin.value()
+            self.seg_results[self.current_index] = SegmentationResult(
+                image_path=self.filenames[self.current_index],
+                area=area,
+                lx=lx,
+                ly=ly,
+                pixel_size=pixel_size,
+            )
     
     def _pick_color(self):
         """Open color picker for mask color."""
