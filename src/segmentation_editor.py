@@ -361,7 +361,7 @@ class MaskEditor(QMainWindow):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Binary Mask Editor")
+        self.setWindowTitle("Segmentation 🦆")
         self.setMinimumSize(800, 600)
         
         # Data storage
@@ -400,7 +400,7 @@ class MaskEditor(QMainWindow):
         binary_threshold_label = QLabel("Binary Threshold:")
         self.binary_threshold_spin = QSpinBox()
         self.binary_threshold_spin.setRange(0, 1000)
-        self.binary_threshold_spin.setValue(100)
+        self.binary_threshold_spin.setValue(127)
         self.binary_threshold_spin.setFixedWidth(100)
         
         # Low-pass Radius

@@ -107,7 +107,7 @@ def segment(img:np.ndarray, binary_threshold, lo_pass_radius):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img_back = lo_pass_filter(img, radius=lo_pass_radius)
     
-    threshod, seg = cv2.threshold(img_back, 100,120, cv2.THRESH_BINARY_INV)
+    threshod, seg = cv2.threshold(img_back, binary_threshold, 255, cv2.THRESH_BINARY_INV)
     seg_binary = seg > binary_threshold
 
     area, lx, ly = compute_mask_stats(seg_binary)
